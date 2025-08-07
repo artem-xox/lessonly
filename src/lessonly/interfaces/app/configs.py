@@ -4,9 +4,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-DEFAULT_OPENAI_MODEL = "gpt-4.1-2025-04-14"
-
-
 def load_env_file(env_file_path: str = ".env") -> None:
 
     env_path = Path(env_file_path)

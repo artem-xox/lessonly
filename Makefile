@@ -79,6 +79,6 @@ security-check: ## Run security checks
 	uv run bandit -r lessonly
 	uv run safety check
 
-# Performance
-profile: ## Run performance profiling
-	uv run python -m cProfile -o profile.stats src/app/main.py
+# CLI
+cli: ## Run CLI examples
+	uv run python3 src/lessonly/interfaces/cli/main.py --topic "Billie Eilish Songs" --level B2 --blocks vocabulary

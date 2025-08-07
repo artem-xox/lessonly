@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.ui.configs import get_streamlit_config
+from src.lessonly.interfaces.app.configs import get_streamlit_config
 
 streamlit_config = get_streamlit_config()
 st.set_page_config(
