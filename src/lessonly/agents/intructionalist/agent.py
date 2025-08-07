@@ -11,7 +11,7 @@ class InstructionalistAgent:
     Agent that generates LessonBlocks based on LessonRequests.
     """
 
-    MODEL = "gpt-5"
+    MODEL = "gpt-5-mini"
 
     def __init__(self, llm: OpenAI):
         self.llm = llm

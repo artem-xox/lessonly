@@ -2,9 +2,6 @@ from enum import Enum
 
 
 class LessonBlockType(Enum):
-    # Warmup – quick activity to get students engaged.
-    WARMUP = "warmup"
-
     # Vocabulary – topic-specific words + example sentences.
     VOCABULARY = "vocabulary"
 
@@ -25,6 +22,9 @@ class LessonBlockType(Enum):
 
     # Quiz – multiple-choice questions.
     QUIZ = "quiz"
+
+    # Warmup – quick activity to get students engaged.
+    WARMUP = "warmup"
 
 
 class LessonLevel(str, Enum):

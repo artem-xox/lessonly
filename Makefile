@@ -48,19 +48,8 @@ test-watch: ## Run tests in watch mode
 	uv run pytest-watch
 
 # Running the application
-run: ## Run the Streamlit app
-	uv run streamlit run src/ui/main.py
-
-
-# Docker
-docker-build: ## Build Docker image
-	docker build -t lessonly .
-
-docker-run: ## Run Docker container
-	docker run -p 8501:8501 -p 8000:8000 lessonly
-
-docker-stop: ## Stop Docker containers
-	docker stop $$(docker ps -q --filter ancestor=lessonly)
+run-app: ## Run the Streamlit app
+	uv run streamlit run src/lessonly/interfaces/app/main.py
 
 # Development utilities
 jupyter: ## Start Jupyter notebook
@@ -70,14 +59,6 @@ jupyter: ## Start Jupyter notebook
 env-example: ## Create example environment file
 	cp .env.example .env
 
-# Documentation
-docs: ## Generate documentation
-	uv run pdoc --html --output-dir docs lessonly
-
-# Security
-security-check: ## Run security checks
-	uv run bandit -r lessonly
-	uv run safety check
 
 # CLI
 cli: ## Run CLI examples
