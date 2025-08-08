@@ -27,10 +27,33 @@ def _render_sidebar() -> None:
         st.markdown("This chat is stored in-memory for the current session only.")
 
 
+def _render_assistant_hidden_message(message: Message) -> None:
+    """Render assistant message hidden behind a click-to-reveal popover (fallback to expander).
+
+    Also render a separate bordered block with a short text "hello world".
+    """
+    popover_ctx = st.popover("Click to reveal your lesson", use_container_width=True)
+
+    # Now the hidden content is the short text, and the visible block shows the bot's message
+    with popover_ctx:
+        st.write("hello world")
+
+    # Visible assistant message
+    with st.container(border=True):
+        st.write(message.text)
+
+
 def _render_history(messages: List[Message]) -> None:
     for m in messages:
-        with st.chat_message(m.role.value):
-            st.write(m.text)
+        if m.role is Role.ASSISTANT:
+            with st.chat_message(Role.ASSISTANT.value):
+                _render_assistant_hidden_message(m)
+        elif m.role is Role.USER:
+            with st.chat_message(Role.USER.value):
+                st.write(m.text)
+        else:
+            with st.chat_message(m.role.value):
+                st.write(m.text)
 
 
 def main() -> None:
@@ -53,15 +76,13 @@ def main() -> None:
         # Call agent with full context and show a live placeholder while thinking
         client = ensure_openai_client()
         agent = ManagerAgent(llm=client)
-        with st.chat_message(Role.ASSISTANT.value):
-            placeholder = st.empty()
-            placeholder.write("Thinking…")
+        with st.spinner("Thinking…"):
             response = agent.chat(ChatRequest(messages=dialog.messages))
             assistant_msg = response.messages[-1]
-            placeholder.write(assistant_msg.text)
 
-        # Persist assistant message to in-memory history
+        # Persist assistant message and rerun so it renders once via history
         dialog.messages.append(assistant_msg)
+        st.rerun()
 
 
 if __name__ == "__main__":

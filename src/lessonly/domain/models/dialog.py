@@ -4,7 +4,7 @@ import uuid
 from dataclasses import dataclass, field
 
 from src.lessonly.domain.models.defs import Role
-from src.lessonly.domain.models.lesson import Lesson
+from src.lessonly.domain.models.lesson import LessonBlock
 
 
 @dataclass
@@ -16,7 +16,7 @@ class Message:
 
 @dataclass
 class Context:
-    lesson: Lesson
+    block: LessonBlock
 
 
 @dataclass
