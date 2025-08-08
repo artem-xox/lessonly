@@ -4,6 +4,7 @@ from openai import OpenAI
 
 from src.lessonly.agents.intructionalist import prompts
 from src.lessonly.domain.models.lesson import LessonBlock, LessonBlockRequest
+from src.lessonly.shared.logging import get_logger, log_calls
 
 
 class InstructionalistAgent:
@@ -15,7 +16,17 @@ class InstructionalistAgent:
 
     def __init__(self, llm: OpenAI):
         self.llm = llm
+        self.logger = get_logger(__name__)
 
+    @log_calls(
+        before=lambda self, lesson_request: (
+            f"Generating lesson block | type={lesson_request.type} "
+            f"level={lesson_request.level.value} topic={lesson_request.topic}"
+        ),
+        after=lambda result, self, lesson_request: (
+            f"LLM response received | content_length={len(result.content)}"
+        ),
+    )
     def generate_lesson_block(self, lesson_request: LessonBlockRequest) -> LessonBlock:
         prompt = prompts.prompt_for(
             lesson_request.type,
