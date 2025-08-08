@@ -46,8 +46,8 @@ class LessonBlockRequest:
     type: LessonBlockType
     level: LessonLevel
     topic: str
+    comment: str | None = None
 
-    # Optional fields
     target_grammar: str | None = None
     word_count: int | None = None
     num_items: int | None = None

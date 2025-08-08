@@ -1,5 +1,9 @@
 import re
 
+import streamlit as st
+
+from src.lessonly.interfaces.app.configs import get_streamlit_config
+
 
 def slugify(text: str) -> str:
     """
@@ -10,3 +14,16 @@ def slugify(text: str) -> str:
     text = re.sub(r"[^a-z0-9\s-]", "", text)
     text = re.sub(r"[\s_-]+", "-", text)
     return text.strip("-")
+
+
+def setup_streamlit_page() -> None:
+    """
+    Apply a consistent Streamlit page configuration across all pages.
+    Must be called before any other Streamlit commands on a page.
+    """
+    cfg = get_streamlit_config()
+    st.set_page_config(
+        page_title=cfg["page_title"],
+        page_icon=cfg["page_icon"],
+        layout=cfg["layout"],
+    )

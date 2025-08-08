@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 
 def load_env_file(env_file_path: str = ".env") -> None:
-
     env_path = Path(env_file_path)
     if env_path.exists():
         load_dotenv(env_path, override=False)
@@ -16,10 +15,9 @@ load_env_file()
 
 
 def get_streamlit_config() -> dict:
-
     return {
         "page_title": os.getenv("STREAMLIT_PAGE_TITLE", "Lessonly"),
-        "page_icon": os.getenv("STREAMLIT_PAGE_ICON", "🤖"),
+        "page_icon": os.getenv("STREAMLIT_PAGE_ICON", "📙"),
         "layout": os.getenv("STREAMLIT_LAYOUT", "wide"),
     }
 

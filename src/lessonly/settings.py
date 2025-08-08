@@ -1,4 +1,3 @@
-# src/lessonly/settings.py
 from __future__ import annotations
 
 import os
@@ -6,12 +5,11 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# 1) Load .env (if present) into process env — no override of already-set env vars.
-load_dotenv(find_dotenv(usecwd=True), override=False)
+load_dotenv(find_dotenv(usecwd=True), override=True)
 
 
 class Settings(BaseSettings):
@@ -23,7 +21,7 @@ class Settings(BaseSettings):
 
     # pydantic-settings config
     model_config = SettingsConfigDict(
-        env_prefix="LESSONLY_",      # allows LESSONLY_* envs
+        env_prefix="LESSONLY_",  # allows LESSONLY_* envs
         extra="ignore",
     )
 
@@ -34,8 +32,12 @@ class Settings(BaseSettings):
 
     # ---- Paths ----
     base_dir: Path = Field(default_factory=lambda: Path.cwd())
-    data_dir: Path = Field(default_factory=lambda: os.path.join(Path.cwd(), Path("data")))
-    cache_dir: Path = Field(default_factory=lambda: os.path.join(Path.cwd(), Path(".cache/lessonly")))
+    data_dir: Path = Field(
+        default_factory=lambda: os.path.join(Path.cwd(), Path("data"))
+    )
+    cache_dir: Path = Field(
+        default_factory=lambda: os.path.join(Path.cwd(), Path(".cache/lessonly"))
+    )
 
     # ---- OpenAI (accept both plain OPENAI_* and LESSONLY_OPENAI_* envs) ----
     openai_api_key: SecretStr = Field(
@@ -61,6 +63,7 @@ class Settings(BaseSettings):
 
         # Lazy import to avoid hard dependency during tests
         from openai import OpenAI  # type: ignore
+
         client = OpenAI(timeout=self.openai_api_timeout)
         return client
 

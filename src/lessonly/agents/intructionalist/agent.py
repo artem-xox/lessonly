@@ -2,7 +2,7 @@ import uuid
 
 from openai import OpenAI
 
-from src.lessonly.agents.intructionalist.prompts import prompt_for
+from src.lessonly.agents.intructionalist import prompts
 from src.lessonly.domain.models.lesson import LessonBlock, LessonBlockRequest
 
 
@@ -17,7 +17,7 @@ class InstructionalistAgent:
         self.llm = llm
 
     def generate_lesson_block(self, lesson_request: LessonBlockRequest) -> LessonBlock:
-        prompt = prompt_for(
+        prompt = prompts.prompt_for(
             lesson_request.type,
             level=lesson_request.level.value,
             topic=lesson_request.topic,
@@ -25,18 +25,29 @@ class InstructionalistAgent:
             motion=f"This house believes {lesson_request.topic}",
         )
 
-        response = self.llm.chat.completions.create(
-            model=self.MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are an experienced ESL teacher.",
-                },
+        messages = [
+            {
+                "role": "system",
+                "content": prompts.SYSTEM_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ]
+        if lesson_request.comment:
+            messages.append(
                 {
                     "role": "user",
-                    "content": prompt,
-                },
-            ],
+                    "content": prompts.ADDITIONAL_INSTRUCTIONS.format(
+                        comment=lesson_request.comment
+                    ),
+                }
+            )
+
+        response = self.llm.chat.completions.create(
+            model=self.MODEL,
+            messages=messages,
         )
 
         content = response.choices[0].message.content.strip()

@@ -8,8 +8,11 @@ import streamlit as st
 from src.lessonly.agents.intructionalist.agent import InstructionalistAgent
 from src.lessonly.domain.models.defs import LessonBlockType, LessonLevel
 from src.lessonly.domain.models.lesson import LessonBlock, LessonBlockRequest
-from src.lessonly.interfaces.app.utils import slugify
+from src.lessonly.interfaces.app.utils import setup_streamlit_page, slugify
 from src.lessonly.settings import get_settings
+
+# Apply page config as the very first Streamlit call on this page
+setup_streamlit_page()
 
 
 def render_block(block: LessonBlock, *, level: LessonLevel, topic: str) -> None:
@@ -47,9 +50,8 @@ def render_block(block: LessonBlock, *, level: LessonLevel, topic: str) -> None:
 
 
 def _sidebar_form() -> tuple[
-    Optional[LessonBlockType], Optional[LessonLevel], str, bool
+    Optional[LessonBlockType], Optional[LessonLevel], str, Optional[str], bool
 ]:
-    st.sidebar.title("Lesson Block")
     with st.sidebar.form("lesson_request_form"):
         block_type = st.selectbox(
             "Block type",
@@ -62,12 +64,14 @@ def _sidebar_form() -> tuple[
             index=3,  # B2 is the default level
             format_func=lambda lv: lv.value,
         )
-        topic = st.text_area("Topic", height=80, value="linkin park")
+        topic = st.text_area("Topic", height=60, value="linkin park")
+        comment = st.text_area("Comment", height=100)
         submitted = st.form_submit_button("Generate", use_container_width=True)
     return (
         cast(Optional[LessonBlockType], block_type),
         cast(Optional[LessonLevel], level),
         topic,
+        comment,
         submitted,
     )
 
@@ -85,10 +89,10 @@ def _ensure_openai_client():
 
 
 def main() -> None:
-    st.write("# ✏️ One-block Lesson Generator")
+    st.write("# One-block Lesson Generator")
 
     # Sidebar form
-    block_type, level, topic, submitted = _sidebar_form()
+    block_type, level, topic, comment, submitted = _sidebar_form()
 
     # Persist last result in session to avoid re-calling the model on reruns
     if "last_block" not in st.session_state:
@@ -106,6 +110,7 @@ def main() -> None:
             type=cast(LessonBlockType, block_type),
             level=cast(LessonLevel, level),
             topic=topic.strip(),
+            comment=comment.strip() if comment else None,
         )
 
         with st.spinner("Generating lesson block..."):
