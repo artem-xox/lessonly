@@ -1,6 +1,17 @@
 from enum import Enum
 
 
+class Role(Enum):
+    # Message from the user
+    USER = "user"
+
+    # Prompt from the system
+    SYSTEM = "system"
+
+    # Response from the agent
+    ASSISTANT = "assistant"
+
+
 class LessonBlockType(Enum):
     # Vocabulary – topic-specific words + example sentences.
     VOCABULARY = "vocabulary"

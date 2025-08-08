@@ -4,6 +4,30 @@ AI-powered app leveraging GPT technology to automatically create customized, eng
 
 ---
 
+### Streamlit app pages
+
+- **Block**: Generate a single lesson block (e.g., vocabulary, grammar, activity, reading, homework). Choose block type, level, and topic, optionally add a comment, then create a focused block ready to use.
+- **Lesson**: Generate a complete lesson composed of multiple blocks tailored to a level and theme.
+- **Dialog**: Chat with an AI lesson manager to refine, expand, or regenerate parts of a lesson interactively.
+
+### Quickstart
+
+1. **Set API key**
+   - Export `OPENAI_API_KEY` (or `LESSONLY_OPENAI_API_KEY`).
+2. **Install dependencies**
+   - Using `uv`: `uv sync` (or `uv sync --dev` for development)
+3. **Run the app**
+   - `make run-app`
+   - Or: `uv run streamlit run src/lessonly/interfaces/app/main.py`
+
+### Documentation
+
+- Product overview: [`docs/product.md`](docs/product.md)
+- MVP design and modules: [`docs/mvp/design.md`](docs/mvp/design.md)
+- Roadmap: [`docs/roadmap.md`](docs/roadmap.md)
+
+---
+
 ### Deploy to Heroku (Docker)
 
 This repository includes a Docker-based setup for deploying the Streamlit app to Heroku using GitHub integration.

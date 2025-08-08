@@ -1,4 +1,5 @@
 from src.lessonly.domain.models.defs import LessonBlockType
+from src.lessonly.domain.models.lesson import LessonBlockRequest
 
 SYSTEM_PROMPT = (
     "You are a 10-year veteran ESL educator. Create CEFR-aligned English teaching content that is clear, concise, and classroom-ready. "
@@ -51,5 +52,22 @@ PROMPTS: dict[LessonBlockType, str] = {
 }
 
 
-def prompt_for(block_type: LessonBlockType, **kwargs: any) -> str:
-    return PROMPTS[block_type].format(**kwargs)
+def prompt_for(lesson_request: LessonBlockRequest) -> str:
+    """Build a prompt string for the given lesson block request.
+
+    The function hides individual formatting parameters behind the
+    `LessonBlockRequest` object, deriving sensible defaults where needed.
+    """
+    template = PROMPTS[lesson_request.type]
+
+    # Provide a comprehensive kwargs set; unused keys are ignored by str.format
+    kwargs = {
+        "level": lesson_request.info.level.value,
+        "topic": lesson_request.info.topic,
+        # Default grammar target if not provided
+        "target_grammar": lesson_request.target_grammar or "First Conditional",
+        # Debate motion derived from topic by default
+        "motion": f"This house believes {lesson_request.info.topic}",
+    }
+
+    return template.format(**kwargs)

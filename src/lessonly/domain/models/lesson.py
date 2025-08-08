@@ -1,16 +1,21 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import uuid
+from dataclasses import dataclass, field
 
 from src.lessonly.domain.models.defs import LessonBlockType, LessonLevel
 
 
 @dataclass
-class Lesson:
+class LessonInfo:
     title: str
-    theme: str
+    topic: str
     level: LessonLevel
 
+
+@dataclass
+class Lesson:
+    info: LessonInfo
     blocks: list[LessonBlock]
 
     def add_block(self, block: LessonBlock) -> None:
@@ -23,9 +28,11 @@ class Lesson:
 
 @dataclass
 class LessonBlock:
-    id: str
     type: LessonBlockType
+    info: LessonInfo
     content: str | list[str]
+
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     def __str__(self) -> str:
         return f"LessonBlock(id={self.id}, type={self.type}, content={self.content})"
@@ -33,19 +40,22 @@ class LessonBlock:
     def __repr__(self) -> str:
         return f"LessonBlock(id={self.id}, type={self.type}, content={self.content})"
 
+    def __post_init__(self) -> None:
+        if self.id is None:
+            self.id = str(uuid.uuid4())
+
 
 @dataclass
 class LessonRequest:
     title: str
-    level: LessonLevel
     topic: str
+    level: LessonLevel
 
 
 @dataclass
 class LessonBlockRequest:
     type: LessonBlockType
-    level: LessonLevel
-    topic: str
+    info: LessonInfo
     comment: str | None = None
 
     target_grammar: str | None = None
