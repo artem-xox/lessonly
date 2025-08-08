@@ -11,7 +11,7 @@ from src.lessonly.domain.models.lesson import LessonBlock
 class Message:
     role: Role
     text: str
-    content: Context | None = None
+    context: Context | None = None
 
 
 @dataclass

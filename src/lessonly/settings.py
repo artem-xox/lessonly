@@ -45,7 +45,7 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("OPENAI_API_KEY"),
     )
     openai_api_timeout: int = Field(
-        default=30,
+        default=60,
     )
 
     # Convenience: ensure dirs exist (safe on repeated calls)

@@ -10,7 +10,7 @@ class InstructionalistAgent:
     Agent that generates LessonBlocks based on LessonRequests.
     """
 
-    MODEL = "gpt-5-mini"
+    MODEL = "gpt-5"
 
     def __init__(self, llm: OpenAI):
         self.llm = llm
@@ -19,7 +19,9 @@ class InstructionalistAgent:
     @log_calls(
         before=lambda self, lesson_request: (
             f"Generating lesson block | type={lesson_request.type} "
-            f"level={lesson_request.info.level.value} topic={lesson_request.info.topic}"
+            f"level={lesson_request.info.level.value} "
+            f"topic={lesson_request.info.topic} "
+            f"comment={lesson_request.comment}"
         ),
         after=lambda result, self, lesson_request: (
             f"Lesson block generated | uuid={result.id} block_type={result.type} content_length={len(result.content)}"

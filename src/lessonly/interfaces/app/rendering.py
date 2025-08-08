@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 import streamlit as st
 
 from src.lessonly.domain.models.lesson import LessonBlock
@@ -38,5 +40,6 @@ def render_block(block: LessonBlock) -> None:
         data=md.encode("utf-8"),
         file_name=filename,
         mime="text/markdown",
+        key=f"download-btn-{block.id}-{time.time()}",
         use_container_width=True,
     )

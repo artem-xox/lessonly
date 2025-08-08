@@ -7,6 +7,7 @@ import streamlit as st
 from src.lessonly.agents.manager.agent import ManagerAgent
 from src.lessonly.domain.models.defs import Role
 from src.lessonly.domain.models.dialog import ChatRequest, Dialog, Message
+from src.lessonly.interfaces.app.rendering import render_block
 from src.lessonly.interfaces.app.utils import ensure_openai_client, setup_streamlit_page
 
 # Apply page config as the very first Streamlit call on this page
@@ -28,17 +29,14 @@ def _render_sidebar() -> None:
 
 
 def _render_assistant_hidden_message(message: Message) -> None:
-    """Render assistant message hidden behind a click-to-reveal popover (fallback to expander).
+    """Render assistant message, and conditionally a hidden lesson block if present in context."""
+    if message.context and getattr(message.context, "block", None):
+        popover_ctx = st.popover(
+            "Click to reveal your lesson", use_container_width=True
+        )
+        with popover_ctx:
+            render_block(message.context.block)
 
-    Also render a separate bordered block with a short text "hello world".
-    """
-    popover_ctx = st.popover("Click to reveal your lesson", use_container_width=True)
-
-    # Now the hidden content is the short text, and the visible block shows the bot's message
-    with popover_ctx:
-        st.write("hello world")
-
-    # Visible assistant message
     with st.container(border=True):
         st.write(message.text)
 
