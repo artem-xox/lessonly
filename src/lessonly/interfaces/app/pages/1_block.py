@@ -14,8 +14,7 @@ from src.lessonly.domain.models.lesson import (
     LessonLevel,
 )
 from src.lessonly.interfaces.app.rendering import render_block
-from src.lessonly.interfaces.app.utils import setup_streamlit_page
-from src.lessonly.settings import get_settings
+from src.lessonly.interfaces.app.utils import ensure_openai_client, setup_streamlit_page
 
 # Apply page config as the very first Streamlit call on this page
 setup_streamlit_page()
@@ -48,18 +47,6 @@ def _sidebar_form() -> tuple[
     )
 
 
-def _ensure_openai_client():
-    settings = get_settings()
-    try:
-        client = settings.make_openai_client()
-        return client
-    except Exception:  # pydantic or client init errors
-        st.error(
-            "OpenAI client could not be initialized. Ensure `OPENAI_API_KEY` (or `LESSONLY_OPENAI_API_KEY`) is set."
-        )
-        st.stop()
-
-
 def main() -> None:
     st.write("# One-block Lesson Generator")
 
@@ -76,7 +63,7 @@ def main() -> None:
             st.warning("Please provide a topic.")
             st.stop()
 
-        client = _ensure_openai_client()
+        client = ensure_openai_client()
         agent = InstructionalistAgent(llm=client)
         request = LessonBlockRequest(
             type=cast(LessonBlockType, block_type),

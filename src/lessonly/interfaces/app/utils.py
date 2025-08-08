@@ -3,6 +3,7 @@ import re
 import streamlit as st
 
 from src.lessonly.interfaces.app.configs import get_streamlit_config
+from src.lessonly.settings import get_settings
 
 
 def slugify(text: str) -> str:
@@ -27,3 +28,19 @@ def setup_streamlit_page() -> None:
         page_icon=cfg["page_icon"],
         layout=cfg["layout"],
     )
+
+
+def ensure_openai_client():
+    """
+    Create and return an OpenAI client using application settings.
+    Shows a Streamlit error and stops execution if initialization fails.
+    """
+    settings = get_settings()
+    try:
+        client = settings.make_openai_client()
+        return client
+    except Exception:
+        st.error(
+            "OpenAI client could not be initialized. Ensure `OPENAI_API_KEY` (or `LESSONLY_OPENAI_API_KEY`) is set."
+        )
+        st.stop()

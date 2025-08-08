@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import uuid
+from dataclasses import dataclass, field
 
-from lessonly.domain.models.defs import Role
-from lessonly.domain.models.lesson import Lesson
+from src.lessonly.domain.models.defs import Role
+from src.lessonly.domain.models.lesson import Lesson
 
 
 @dataclass
@@ -26,3 +27,9 @@ class ChatRequest:
 @dataclass
 class ChatResponse:
     messages: list[Message]
+
+
+@dataclass
+class Dialog:
+    messages: list[Message]
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
