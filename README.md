@@ -1,7 +1,8 @@
 ## Lessonly
-![High-level design](docs/mvp/agent-high-level-design.png)
 
 AI-powered app leveraging GPT technology to automatically create customized, engaging English lesson plans for students and teachers.
+
+![High-level design](docs/mvp/agent-high-level-design.png)
 
 ---
 
